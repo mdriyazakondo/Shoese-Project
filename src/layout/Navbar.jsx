@@ -31,9 +31,12 @@ const Navbar = () => {
   return (
     <div className=" shadow fixed right-0 top-0 z-50 left-0 bg-white/90">
       <div className="flex items-center justify-between max-w-7xl mx-6 md:mx-auto py-3">
-        <h3 className="text-3xl text-amber-400 font-semibold uppercase">
+        <Link
+          to={"/"}
+          className="text-3xl text-amber-400 font-semibold uppercase"
+        >
           shopping
-        </h3>
+        </Link>
         <nav>
           {/* Desktop */}
           <ul className="md:flex items-center gap-8 hidden">

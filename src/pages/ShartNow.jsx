@@ -7,21 +7,32 @@ import { Minus, Plus } from "lucide-react";
 
 const ShartNow = () => {
   const [product, setProduct] = useState(null);
-  const [filteProductData, setFilteProductData] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+
   const { id } = useParams();
   const { shartData, addToCart, decreaseQuantity } =
     useContext(ProductsContext);
 
   useEffect(() => {
     const foundProduct = shartData.find((item) => item.id === Number(id));
-    setProduct(foundProduct);
-
     if (foundProduct) {
-      const releted = shartData.filter(
+      setProduct(foundProduct);
+
+      // Related products
+      const related = shartData.filter(
         (item) =>
           item.category === foundProduct.category && item.id !== foundProduct.id
       );
-      setFilteProductData(releted);
+      setRelatedProducts(related);
+
+      // Discount calculation
+      const discount =
+        typeof foundProduct.size === "number"
+          ? Number(foundProduct.size) + 1
+          : Math.floor(Math.random() * (25 - 10 + 1) + 10);
+
+      setDiscountPercentage(discount);
     }
   }, [shartData, id]);
 
@@ -29,133 +40,131 @@ const ShartNow = () => {
     return <p className="text-center mt-10 text-amber-500">Loading...</p>;
   }
 
-  const {
-    image,
-    title,
-    name,
-    price,
-    color,
-    size,
-    category,
-    description,
-    rating,
-    tags,
-    review_count,
-    id: productId,
-  } = product;
-
-  const totalPrice = parseInt((price * (Number(size) + 1)) / 100);
-  const discount_price = price - totalPrice;
+  const discountAmount = (product.price * discountPercentage) / 100;
+  const discount_price = (product.price - discountAmount).toFixed(2);
 
   return (
-    <div className="bg-amber-50/30 pt-24 ">
+    <div className="bg-amber-50/30 pt-24">
       <div className="max-w-5xl mx-5 md:mx-auto">
-        <div className=" flex items-center gap-0 md:gap-20 md:flex-row flex-col space-y-8">
+        {/* Product Detail */}
+        <div className="flex flex-col md:flex-row gap-8 md:gap-20">
           <div className="w-full md:w-1/2 bg-white rounded-md shadow">
-            <img className="w-full h-[500px] rounded-md" src={image} alt="" />
+            <img
+              className="w-full h-[500px]  rounded-md"
+              src={product.image}
+              alt={product.name}
+            />
           </div>
-          <div className="full md:w-1/2 space-y-2 text-amber-500">
-            <div className="flex items-center gap-2">
-              {tags.slice(0, 4).map((item, index) => (
-                <h4
-                  className="py-2 px-4 bg-amber-50 text-amber-500 rounded-full flex"
-                  key={index}
-                >
-                  #{item}
-                </h4>
+
+          <div className="w-full md:w-1/2 space-y-4 text-amber-500">
+            {/* Tags */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {product.tags.slice(0, 4).map((tag, idx) => (
+                <span key={idx} className="py-1 px-3 bg-amber-50 rounded-full">
+                  #{tag}
+                </span>
               ))}
             </div>
+
             <div className="flex items-center gap-6">
-              <p className="font-semibold text-xl">Category: {category}</p>
-              <p className="font-semibold">Views: {review_count}</p>
+              <p className="font-semibold">Category: {product.category}</p>
+              <p className="font-semibold">Views: {product.review_count}</p>
             </div>
-            <h3 className="text-3xl text-amber-500 font-semibold">{name}</h3>
-            <div className="flex items-center gap-10">
-              <p className="font-semibold">{title}</p>
-              <Rating style={{ maxWidth: 100 }} value={parseInt(rating)} />
+
+            <h3 className="text-3xl font-semibold">{product.name}</h3>
+            <div className="flex items-center gap-6">
+              <p className="font-semibold">{product.title}</p>
+              <Rating
+                style={{ maxWidth: 100 }}
+                value={parseInt(product.rating)}
+              />
             </div>
-            <p className="font-semibold">{description}</p>
-            <div className="flex items-center gap-2">
-              Price: <p className="font-semibold line-through"> ${price}</p>
-              <p className="font-semibold">${discount_price}</p>
+
+            <p>{product.description}</p>
+
+            {/* Price */}
+            <div className="flex items-center gap-4 text-lg font-semibold">
+              <span className="line-through text-gray-400">
+                ${product.price}
+              </span>
+              <span className="text-amber-600">${discount_price}</span>
+              <span className="text-green-600">
+                -{discountPercentage.toFixed(2)}%
+              </span>
             </div>
-            <div className="flex items-center  gap-20">
+
+            {/* Quantity & Add To Cart */}
+            <div className="flex items-center gap-4 mt-4">
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => addToCart(product)}
-                  className="py-2 px-2 rounded-full bg-amber-100 cursor-pointer"
-                >
-                  <Plus />
-                </button>
-                <button
                   onClick={() => decreaseQuantity(product)}
-                  className="py-2 px-2 rounded-full bg-amber-100 cursor-pointer"
+                  className="py-2 px-2 rounded-full bg-amber-100 hover:bg-amber-200 transition"
                 >
                   <Minus />
                 </button>
-              </div>
-              <div>
+                <span className="font-medium">{product.quantity || 1}</span>
                 <button
                   onClick={() => addToCart(product)}
-                  className="px-8 py-2 bg-amber-600 text-white rounded-full cursor-pointer"
+                  className="py-2 px-2 rounded-full bg-amber-100 hover:bg-amber-200 transition"
                 >
-                  Add To Cart
+                  <Plus />
                 </button>
               </div>
+              <button
+                onClick={() => addToCart(product)}
+                className="px-8 py-2 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition"
+              >
+                Add To Cart
+              </button>
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 ">
-          {filteProductData.map((items) => (
-            <div key={items.id} className="bg-white rounded-md shadow p-4">
-              <div className="flex items-center justify-center">
-                <Link to={`/cart/${items.id}`}>
-                  <img
-                    className="w-[200px] h-[200px]"
-                    src={items.image}
-                    alt=""
-                  />
-                </Link>
-              </div>
-              <div className="text-amber-500 space-y-3">
-                <div className="flex items-center justify-between">
-                  <p className="font-semibold text-xl">Category: {category}</p>
-                  <p className="font-semibold">Views: {review_count}</p>
-                </div>
-                <h3 className="text-xl text-amber-500 font-semibold">{name}</h3>
-                <div className="flex items-center justify-between ">
-                  <p className="font-semibold">Title: {title}</p>
-                  <Rating style={{ maxWidth: 100 }} value={parseInt(rating)} />
-                </div>
-                <h2 className="text-xl font-semibold ">{items.name}</h2>
-                <div className="flex items-center  gap-10 mt-5">
-                  <div className="flex items-center gap-2">
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-10">
+            <h3 className="text-2xl font-semibold mb-4 text-amber-500">
+              Related Products
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {relatedProducts.map((item) => {
+                const itemDiscount =
+                  typeof item.size === "number"
+                    ? Number(item.size) + 1
+                    : Math.floor(Math.random() * (25 - 10 + 1) + 10);
+                const itemDiscountPrice = (
+                  item.price -
+                  (item.price * itemDiscount) / 100
+                ).toFixed(2);
+
+                return (
+                  <div key={item.id} className="bg-white rounded-md shadow p-4">
+                    <Link to={`/shart/${item.id}`}>
+                      <img
+                        className="w-full h-[300px]  rounded-md"
+                        src={item.image}
+                        alt={item.name}
+                      />
+                    </Link>
+                    <h4 className="text-lg font-semibold mt-2 text-amber-500">
+                      {item.name}
+                    </h4>
+                    <p className="text-gray-400 line-through">${item.price}</p>
+                    <p className="text-amber-600 font-semibold">
+                      ${itemDiscountPrice} ({itemDiscount}%)
+                    </p>
                     <button
-                      onClick={() => addToCart(product)}
-                      className="py-2 px-2 rounded-full bg-amber-100 cursor-pointer"
-                    >
-                      <Plus />
-                    </button>
-                    <button
-                      onClick={() => decreaseQuantity(product)}
-                      className="py-2 px-2 rounded-full bg-amber-100 cursor-pointer"
-                    >
-                      <Minus />
-                    </button>
-                  </div>
-                  <div>
-                    <button
-                      onClick={() => addToCart(product)}
-                      className="px-8 py-2 bg-amber-600 text-white rounded-full cursor-pointer"
+                      onClick={() => addToCart(item)}
+                      className="mt-2 w-full py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition"
                     >
                       Add To Cart
                     </button>
                   </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

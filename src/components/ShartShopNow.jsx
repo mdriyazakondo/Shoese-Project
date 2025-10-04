@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { ProductsContext } from "../context/ProductContext";
 import ShopSection from "./ShopSection";
 import { Link } from "react-router-dom";
+import ShartSection from "./ShartSection";
 const ShartShopNow = () => {
   const { shartData } = useContext(ProductsContext);
   console.log(shartData);
@@ -14,7 +15,7 @@ const ShartShopNow = () => {
       </div>
       <div className="max-w-7xl mx-5 md:mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {shartData.slice(23, 29).map((item) => (
-          <ShopSection key={item.id} item={item} />
+          <ShartSection key={item.id} item={item} />
         ))}
       </div>
       <div className="flex items-center justify-center mt-6">

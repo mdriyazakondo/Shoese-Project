@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ProductsContext } from "../context/ProductContext";
 import ShopSection from "../components/ShopSection";
+import TShartSection from "../components/TShartSection";
 
 const categories = ["All", "Men", "Women", "Kids"];
 
@@ -74,7 +75,7 @@ const TShart = () => {
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.length > 0 ? (
-            products.map((item) => <ShopSection key={item.id} item={item} />)
+            products.map((item) => <TShartSection key={item.id} item={item} />)
           ) : (
             <p className="text-center text-gray-500 col-span-full">
               No products found.
