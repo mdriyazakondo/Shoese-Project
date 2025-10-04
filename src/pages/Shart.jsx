@@ -4,14 +4,14 @@ import ShopSection from "../components/ShopSection";
 
 const categories = ["All", "Men", "Women", "Kids"];
 
-const Shop = () => {
-  const { productsData } = useContext(ProductsContext);
-  const [products, setProducts] = useState(productsData || []);
+const Shart = () => {
+  const { shartData } = useContext(ProductsContext);
+  const [products, setProducts] = useState(shartData || []);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    let filteredProducts = productsData || [];
+    let filteredProducts = shartData || [];
 
     // Category filter
     if (selectedCategory !== "All") {
@@ -26,19 +26,17 @@ const Shop = () => {
       const term = searchTerm.toLowerCase();
       filteredProducts = filteredProducts.filter(
         (item) =>
-          item.title?.toLowerCase().includes(term) ||
-          item.name?.toLowerCase().includes(term) ||
-          item.color?.toLowerCase().includes(term) ||
-          item.size?.toLowerCase().includes(term) ||
-          item.category?.toLowerCase().includes(term) ||
-          item.description?.toLowerCase().includes(term) ||
-          item.details?.toLowerCase().includes(term) ||
-          item.tags?.toLowerCase().includes(term)
+          item.color.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.details.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.category.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     setProducts(filteredProducts);
-  }, [selectedCategory, productsData, searchTerm]);
+  }, [selectedCategory, shartData, searchTerm]);
 
   return (
     <div className="pt-10 bg-gray-50 min-h-[93vh]">
@@ -86,4 +84,4 @@ const Shop = () => {
   );
 };
 
-export default Shop;
+export default Shart;

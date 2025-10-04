@@ -3,7 +3,17 @@ export const ProductsContext = createContext();
 
 const ProductContext = ({ children }) => {
   const [productsData, setProductsData] = useState([]);
-  const [carts, setCarts] = useState([]);
+  const [shartData, setShartData] = useState([]);
+  const [tShartData, setTShartData] = useState([]);
+  const [pantData, setPantData] = useState([]);
+  const [carts, setCarts] = useState(() => {
+    try {
+      const saved = localStorage.getItem("carts");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
   useEffect(() => {
     const productData = async () => {
@@ -17,6 +27,48 @@ const ProductContext = ({ children }) => {
     };
     productData();
   }, []);
+  useEffect(() => {
+    const productData = async () => {
+      try {
+        const res = await fetch("/shart.json");
+        const data = await res.json();
+        setShartData(data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    productData();
+  }, []);
+
+  useEffect(() => {
+    const productData = async () => {
+      try {
+        const res = await fetch("/t-shart.json");
+        const data = await res.json();
+        setTShartData(data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    productData();
+  }, []);
+
+  useEffect(() => {
+    const productData = async () => {
+      try {
+        const res = await fetch("/pant.json");
+        const data = await res.json();
+        setPantData(data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    productData();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("carts", JSON.stringify(carts));
+  }, [carts]);
 
   const addToCart = (item) => {
     setCarts((prev) => {
@@ -58,6 +110,9 @@ const ProductContext = ({ children }) => {
     addToCart,
     decreaseQuantity,
     removeProductsItem,
+    shartData,
+    tShartData,
+    pantData,
   };
 
   return (

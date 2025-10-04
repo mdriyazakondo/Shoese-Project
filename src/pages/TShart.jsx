@@ -4,14 +4,14 @@ import ShopSection from "../components/ShopSection";
 
 const categories = ["All", "Men", "Women", "Kids"];
 
-const Shop = () => {
-  const { productsData } = useContext(ProductsContext);
-  const [products, setProducts] = useState(productsData || []);
+const TShart = () => {
+  const { tShartData } = useContext(ProductsContext);
+  const [products, setProducts] = useState(tShartData || []);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    let filteredProducts = productsData || [];
+    let filteredProducts = tShartData || [];
 
     // Category filter
     if (selectedCategory !== "All") {
@@ -38,7 +38,7 @@ const Shop = () => {
     }
 
     setProducts(filteredProducts);
-  }, [selectedCategory, productsData, searchTerm]);
+  }, [selectedCategory, tShartData, searchTerm]);
 
   return (
     <div className="pt-10 bg-gray-50 min-h-[93vh]">
@@ -86,4 +86,4 @@ const Shop = () => {
   );
 };
 
-export default Shop;
+export default TShart;

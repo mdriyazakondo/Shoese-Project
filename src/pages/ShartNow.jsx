@@ -5,25 +5,25 @@ import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { Minus, Plus } from "lucide-react";
 
-const Cart = () => {
+const ShartNow = () => {
   const [product, setProduct] = useState(null);
   const [filteProductData, setFilteProductData] = useState([]);
   const { id } = useParams();
-  const { productsData, addToCart, decreaseQuantity } =
+  const { shartData, addToCart, decreaseQuantity } =
     useContext(ProductsContext);
 
   useEffect(() => {
-    const foundProduct = productsData.find((item) => item.id === Number(id));
+    const foundProduct = shartData.find((item) => item.id === Number(id));
     setProduct(foundProduct);
 
     if (foundProduct) {
-      const releted = productsData.filter(
+      const releted = shartData.filter(
         (item) =>
           item.category === foundProduct.category && item.id !== foundProduct.id
       );
       setFilteProductData(releted);
     }
-  }, [productsData, id]);
+  }, [shartData, id]);
 
   if (!product) {
     return <p className="text-center mt-10 text-amber-500">Loading...</p>;
@@ -161,4 +161,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default ShartNow;
